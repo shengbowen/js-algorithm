@@ -35,43 +35,47 @@ Stack.prototype.clear = function() {
   this.top = -1;
 }
 
+Stack.prototype.isEmpty = function() {
+  return this.top === -1;
+}
+
 
 //es6 语法
-class Stack {
-
-  constructor(size) {
-    this.stack = [];
-    this.top = -1;
-    this.STACK_SIZE = size || 5;
-  }
-
-  push(element) {
-    if(this.top === this.STACK_SIZE - 1)
-      throw Error('栈满');
-    else
-      this.stack[++this.top] = element;
-  }
-
-  pop() {
-    if(this.top === -1)
-      throw Error('栈空');
-    else
-      return this.stack[this.top--];
-  }
-
-  peek() {
-    if(this.top === -1)
-      throw Error('栈空');
-    else
-      return this.stack[this.top];
-  }
-
-  length() {
-    return this.top + 1;
-  }
-
-  clear() {
-    this.top = -1;
-  }
-
-}
+// class Stack {
+//
+//   constructor(size) {
+//     this.stack = [];
+//     this.top = -1;
+//     this.STACK_SIZE = size || 5;
+//   }
+//
+//   push(element) {
+//     if(this.top === this.STACK_SIZE - 1)
+//       throw Error('栈满');
+//     else
+//       this.stack[++this.top] = element;
+//   }
+//
+//   pop() {
+//     if(this.top === -1)
+//       throw Error('栈空');
+//     else
+//       return this.stack[this.top--];
+//   }
+//
+//   peek() {
+//     if(this.top === -1)
+//       throw Error('栈空');
+//     else
+//       return this.stack[this.top];
+//   }
+//
+//   length() {
+//     return this.top + 1;
+//   }
+//
+//   clear() {
+//     this.top = -1;
+//   }
+//
+// }
