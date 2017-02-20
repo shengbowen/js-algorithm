@@ -3,12 +3,61 @@
   <head>
     <meta charset="utf-8">
     <title>栈的应用</title>
+    <style media="screen">
+      .main {
+        width: 800px;
+        background-color: #f3f5f6;
+        margin: 0 auto;
+        height: 100px;
+        padding: 40px;
+      }
+
+      .content {
+        width: 60%;
+        height: 40px;
+        line-height: 40px;
+        font-size: 16px;
+        -webkit-appearance: none;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        padding: 5px;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        transition: border-color ease-in-out .15s, box-shadow ease .15s;
+        outline: none;
+      }
+
+      .content:focus {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        border-color: #2996ee;
+      }
+      .submit {
+        height: 52px;
+        margin-left: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        vertical-align: top;
+        cursor: pointer;
+        outline: 0;
+      }
+
+      .error{
+        font-size: 12px;
+        color: red;
+        margin: 0;
+      }
+
+    </style>
   </head>
   <body>
+    <section class="main">
+      <section class="app1" id="app1">
+        <h1 class="title">1.括号闭合检测</h1>
+        <input class="content" type="text"  placeholder="输入要检测的字符串" v-model="str1"><button class="submit" @click="handleClick">检测</button>
+        <p class="error">{{error}}</p>
+      </section>
+
+    </section>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script type="text/javascript" src="../statck.js"></script>
     <script type="text/javascript" src="./app.js"></script>
-    <script type="text/javascript">
-      checkClose('(1)')
-    </script>
   </body>
 </html>
