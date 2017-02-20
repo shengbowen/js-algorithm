@@ -105,13 +105,14 @@ new Vue({
 var calc = (function(){
   var priority = {
     '+': 1,
+    '-': 1,
     '=': 1,
     '%': 2,
     '*': 2,
     '/': 2,
     '^': 3,
-    '(': 0,
-    ')': 0,
+    // '(': 0,
+    // ')': 0,
     '`': -1
   };
 
@@ -134,4 +135,113 @@ var calc = (function(){
     }
   }
 
-})();
+  function compareOperator(op1, op2) {
+    return priority[op1] - priority[op2];
+  }
+
+  function calcExpression(exp) {
+    var opStack = new Stack(100),
+        numStack = new Stack(200),
+        exp = exp.replace(/s/g, '');
+    exp += '`';
+    if(exp[0] === '-') {
+      exp = '0' + exp;
+    }
+    var c,
+        op,
+        num1,
+        num2;
+    for(var i=0; i<exp.length; i++) {
+      c = exp[i];
+      if(c in priority) {
+        //如果是操作符
+        while (c !== '(' && !opStack.isEmpty() && compareOperator(opStack.peek(), c) >=0 ) {
+          op = opStack.pop();
+          if(op !== '(' && op !== ')') {
+            num2 = numStack.pop();
+            num1 = numStack.pop();
+            numStack.push(doop(op, num1, num2));
+          }
+        }
+        if (c !== ')') opStack.push(c);
+      } else {
+        while(!(exp[i] in priority)) {
+          i++;
+          c += exp[i];
+        }
+        numStack.push(parseInt(c));
+        i--;
+      }
+    }
+    return numStack.length ? numStack.pop() : NAN;
+  }
+
+//   function calcExpression(exp) {
+//     var opStack = new Stack(100),
+//         numStack = new Stack(200),
+//         exp = exp.replace(/s/g, '');
+//     // exp += '`';
+//     if(exp[0] === '-') {
+//       exp = '0' + exp;
+//     }
+//     var c,
+//         op,
+//         num1,
+//         num2;
+//     for(var i=0; i<exp.length; i++) {
+//       c = exp[i];
+//       if(c === '(') {
+//         opStack.push(c);
+//       } else if (/\d/.test(c)) {
+//         while(/\d/.test(exp[++i])) {
+//           c += exp[i];
+//         }
+//         numStack.push(c);
+//         i--;
+//       }else if(c in priority) {
+//         while (!opStack.isEmpty() && compareOperator(opStack.peek(), c) >=0) {
+//           op = opStack.pop();
+//           num2 = numStack.pop();
+//           num1 = numStack.pop();
+//           numStack.push(doop(op, num1, num2));
+//         }
+//         opStack.push(c);
+//       } else if (c === ')') {
+//         op = opStack.pop();
+//         while(op !== '(') {
+//           num2 = numStack.pop();
+//           num1 = numStack.pop();
+//           numStack.push(doop(op, num1, num2));
+//           op = opStack.pop()
+//         }
+//       }
+//     }
+//     return numStack.length ? numStack.pop() : NAN;
+//   }
+//
+//   return {
+//     calcExpression: calcExpression
+//   }
+//
+// })();
+
+new Vue({
+  el: '#app2',
+  data: {
+    exp: '1+2-3*(1+1)/2+4%2',
+    error: '',
+    result: ''
+  },
+  methods: {
+    handleClick: function() {
+      var _this = this;
+      var exp = _this.exp.replace(/s+/,'');
+      if(exp === ''){
+        _this.error = '请输入内容！';
+        // console.log(_this.error)
+        return;
+      }
+      _this.result = calc.calcExpression(exp);
+    }
+  }
+});

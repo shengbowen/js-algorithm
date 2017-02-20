@@ -54,6 +54,16 @@
         <p class="error">{{error}}</p>
       </section>
 
+      <section class="app1" id="app2">
+        <h1 class="title">2.表达式计算</h1>
+        <input class="content" type="text"  placeholder="输入要计算的表达式" v-model="exp">
+        <p class="error">{{error}}</p>
+        <p>
+          <button class="submit" @click="handleClick">=</button>
+        </p>
+        <input class="content" type="text"  placeholder="结果" v-model="result">
+      </section>
+
     </section>
 
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
