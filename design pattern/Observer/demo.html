@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Observer</title>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<div>
+		<button id="addNewObserver">Add new observer checkbox</button>
+		<input type="checkbox" id="mainCheckbox">
+		<div id="observersContainer"></div>
+	</div>
+
+
+	<script src="./observer.js"></script>
+	<script>
+		function extend(obj, extension) {
+			for (var key in extension) {
+				obj[key] = extension[key];
+			}
+		}
+
+		var controlCheckbox = document.getElementById('mainCheckbox'),
+				addBtn = document.getElementById('addNewObserver'),
+				container = document.getElementById('observersContainer');
+
+		extend(controlCheckbox, new Subject());
+
+		controlCheckbox.onclick = function() {
+			controlCheckbox.notify(controlCheckbox.checked);
+		}
+
+		addBtn.onclick = addNewObserver;
+
+		function addNewObserver() {
+			var check = document.createElement('input');
+			check.type = 'checkbox';
+			extend(check, new Observer());
+
+			check.update = function(value) {
+				this.checked = value;
+			}
+			//为subject的observers数组添加新的observer
+			controlCheckbox.addObserver(check);
+			//将元素添加进container
+			container.appendChild(check);
+		}
+
+
+	</script>
+</body>
+</html>
