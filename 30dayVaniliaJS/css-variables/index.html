@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>css variables with js</title>
+	<link rel="stylesheet" href="">
+	<style>
+		:root {
+			--base: #ffc600;
+			--spacing: 10px;
+			--blur: 10px;
+		}
+
+		img {
+			padding: var(--spacing);
+			background: var(--base);
+			filter: blur(var(--blur));
+		}
+
+		.hl {
+			color: var(--base);
+		}
+
+		body{
+			text-align: center;
+			background: #192594;
+			color: white;
+			font-family: 'helvetica neue', sans-serif;
+			font-weight: 100;
+			font-size: 50px;
+		}
+
+		.controls{
+			margin-bottom: 50px;
+		}
+
+		a {
+			color: var(--base);
+			text-decoration: none;
+		}
+
+		input {
+			width: 100px;
+		}
+
+	</style>
+</head>
+<body>
+	<h2>update css variables with <span class="hl">JS</span></h2>
+	<div class="controls">
+		<label for="spacing">Spacing:</label>
+		<input type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+
+		<label for="blur">Blur:</label>
+		<input type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+
+		<lable for="base">Base color</lable>
+		<input type="color" name="base" value="#ffc600">
+	</div>
+
+	<img src="http://unsplash.it/800/500?image=899" alt="senery">
+
+	<script>
+		const inputs = document.querySelectorAll('.controls input');
+
+		function handleUpdate() {
+			const suffix = this.dataset.sizing || '';
+			document.body.style.setProperty(`--${this.name}`, this.value + suffix);
+		}
+
+		inputs.forEach(input => input.addEventListener('change', handleUpdate));
+		
+		inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+	</script>
+</body>
+</html>
