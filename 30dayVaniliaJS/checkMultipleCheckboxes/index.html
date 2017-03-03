@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>hold shift to check multiple checkboxes</title>
+	<style>
+		body {
+			background: rgb(255,198,0);
+			width: 100%;
+			height: 100%;
+		}
+		.container {
+			width: 300px;
+			/*height: 600px;*/
+			margin: 50px auto;
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+		}
+		.item {
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid #f1f1f1;
+		}
+		.item:last-child {
+			border-bottom: 0;
+		}
+
+		input:checked + p {
+			text-decoration: line-through;
+			background-color: #f9f9f9;
+		}
+
+		input[type="checkbox"] {
+			margin: 20px;
+		}
+
+		p {
+			margin: 0;
+			padding: 20px;
+			transition: background-color 0.2s;
+			flex: 1;
+			font-style: 20px;
+			font-weight: 200;
+			border-left: 1px solid #f1f1f1;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+		<div class="item">
+			<input type="checkbox">
+			<p>buy some thing</p>
+		</div>
+	</div>
+
+	<script>
+		
+		const checkboxes = document.querySelectorAll('.item input');
+
+		let inBetween = false;
+		let lastClick;
+
+		function handleClick(e) {
+
+			if(e.shiftKey && this.checked && lastClick) {
+
+				checkboxes.forEach(checkbox => {
+					if(checkbox === this || checkbox === lastClick) {
+						inBetween = !inBetween;
+					}
+
+					if(inBetween) {
+						checkbox.checked = true;
+					}
+
+				});
+
+			}
+
+			lastClick = this;
+
+		}
+
+		checkboxes.forEach((checkbox) => checkbox.addEventListener('click', handleClick));
+
+	</script>
+
+</body>
+</html>
