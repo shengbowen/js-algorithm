@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>unreal cam fun</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="photobooth">
+		<div class="controls">
+			<button onclick="takePhoto()">take photo</button>
+			<div class="rgb">
+				<label for="rmin">Red min:</label>
+				<input type="range" min="0" max="255" name="rmin">
+				<label for="rmax">Red max:</label>
+				<input type="range" min="0" max="255" name="rmax">
+
+				<br>
+
+				<label for="gmin">Green min:</label>
+				<input type="range" min="0" max="255" name="gmin">
+				<label for="gmax">Green max:</label>
+				<input type="range" min="0" max="255" name="gmax">
+
+				<br>
+				
+
+				<label for="bmin">Breen min:</label>
+				<input type="range" min="0" max="255" name="bmin">
+				<label for="bmax">Breen max:</label>
+				<input type="range" min="0" max="255" name="bmax">
+			
+			</div>
+		</div>
+		
+
+		<canvas class="photo"></canvas>
+		<video src="" class="player"></video>
+		<div class="strip"></div>
+	</div>
+		<audio src="http://wesbos.com/demos/photobooth/snap.mp3" class="snap"></audio>
+
+	<script src="index.js"></script>
+</body>
+</html>
