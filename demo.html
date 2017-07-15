@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style>
+  .out{width: 200px;height: 100px;line-height: 20px;overflow: hidden;font-size: 16px;}
+</style>
+<script src="./jquery-1.12.4.min.js"></script>
+</head>
+<body>
+
+
+<div class="out">
+  <div class="in">MULTILINE TEXT</div>
+</div>
+
+<script>
+  // require jquery
+  function genText(count, average) {
+    average = average || 0
+    var strs = ['一', '1', 'a', 'A', '-'];
+    var i = average === 0 ? count : Math.floor(count / 2);
+    var str = '';
+    while (i > 0) {
+      str += strs[Math.floor(Math.random() * 5)].repeat(Math.floor(Math.random() * 10) + 1);
+      i--;
+    }
+    var addition = '. .'.repeat(Math.floor(count / 2));
+    if (average > 0) {
+      str += addition;
+    } else if (average < 0) {
+      str = addition + str;
+    }
+    $('.in').text(str);
+  }
+  var $out = $('.out');
+  var $in = $('.in');
+  var textCount = 10000;
+  genText(textCount);
+  // genText(textCount, -1); // 前密后疏
+  // genText(textCount, 1); // 前疏后密
+
+  function ellipses($out, $in) {
+  if ( !( $in.height() > $out.height() ) ) return;
+  var str = $in.text();
+  var ellipsesText = '...';
+  var outHeight = $out.height();
+  var index = calc(str, 0, str.length);
+  $in.text( str.slice(0, index) + ellipsesText );
+  function calc(str, min, max) {
+    if ( !( min + 1 < max ) ) return min;
+    var middle = min + Math.floor( ( max - min ) / 2 );
+    $in.text( str.slice(0, middle) + ellipsesText );
+    if ( $in.height() > outHeight ) {
+      return calc(str, min, middle);
+    } else {
+      return calc(str, middle, max);
+    }
+  }
+}
+
+// 本版本减少对字符串的操作
+function ellipses($out, $in) {
+  if ( !( $in.height() > $out.height() ) ) return;
+  var outHeight = $out.height();
+  calc('', $in.text());
+  function calc(total, str) {
+    var max = str.length;
+    var middle = Math.floor( max / 2 );
+    var half = str.slice(0, middle);
+    $in.text( total + half + '...' );
+    if ( $in.height() > outHeight ) {
+      calc(total, half);
+    } else if (middle + 1 < max) {
+      calc(total + half, str.slice(middle, max));
+    }
+  }
+}
+ellipses($('.out'), $('.in'));
+
+var car = Object.create(vehicle, {
+  'id': {
+    value: ,
+    enumerable: true
+  },
+  'model': {
+    value: 'ford',
+    enumerable: true
+  }
+})
+
+carManage.execute = function(name) {
+  return carManage[name] && carManage[name].apply([].slice.call(arguments, 1));
+}
+
+</script>
+	
+</body>
+</html>
