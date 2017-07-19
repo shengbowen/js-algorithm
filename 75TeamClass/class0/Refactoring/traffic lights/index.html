@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style>
+		#traffic > li{
+		  display: block;
+		}
+
+		#traffic span{
+		  display: inline-block;
+		  width: 50px;
+		  height: 50px;
+		  background-color: gray;
+		  margin: 5px;
+		  border-radius: 50%;
+		}
+
+		#traffic.stop li:nth-child(1) span{
+		  background-color: #a00;
+		}
+
+		#traffic.wait li:nth-child(2) span{
+		  background-color: #aa0;
+		}
+
+		#traffic.pass li:nth-child(3) span{
+		  background-color: #0a0;
+		}
+	</style>
+</head>
+<body>
+	<ul id="traffic" class="wait">
+	  <li><span></span></li>
+	  <li><span></span></li>
+	  <li><span></span></li>
+	</ul>
+</body>
+	<script>
+			
+			/*
+				version1
+				扩展性差，添加更多的灯，造成callback hell
+			*/
+			const traffic = document.getElementById('traffic');
+
+			// (function reset() {
+			// 	traffic.className = 'wait';
+
+			// 	setTimeout(function() {
+			// 		traffic.className = 'stop';
+			// 		setTimeout(() => {
+			// 			traffic.className = 'pass';
+			// 			setTimeout(reset, 200);
+			// 		}, 200)
+			// 	}, 200);
+			// })();
+
+
+			/*
+				version2
+				封装性不好， 依赖外部变量
+			*/
+
+			// var stateList = ['wait', 'stop', 'pass'];
+			// var currentStateIndex = 0;
+
+			// setInterval(() => {
+			// 	traffic.className = stateList[currentStateIndex];
+			// 	currentStateIndex = (currentStateIndex + 1) % stateList.length;
+			// }, 2000);
+
+
+			/*
+				version 3
+				中规中矩，可复用性差
+			*/
+
+			// function start(traffic, stateList) {
+			// 	var currentStateIndex = 0;
+
+			// 	setInterval(() => {
+			// 		traffic.className = stateList[currentStateIndex];
+			// 		currentStateIndex = (currentStateIndex + 1) % stateList.length;
+			// 	}, 200)
+			// }
+
+			// start(traffic, ['wait', 'stop', 'pass']);
+
+
+			/*
+				version 4
+				函数式 编程， 抽象poll， 但是需求变为 不等时间的变化，就扑街了
+			*/
+
+			// function poll(...fnList) {
+			// 	let stateIndex = 0;
+
+			// 	return function(...args) {
+			// 		let fn = fnList[stateIndex++ % fnList.length];
+			// 		fn.apply(this, args);
+			// 	}
+			// }
+
+			// function setState(state) {
+			// 	traffic.className = state;
+			// }
+
+			// let trafficPoll = poll(
+			// 		setState.bind(null, 'wait'),
+			// 		setState.bind(null, 'stop'),
+			// 		setState.bind(null, 'pass')
+			// 	)
+
+			// setInterval(trafficPoll, 2000);
+
+			/*
+				version 5
+
+			*/
+
+			// function wait(time) {
+			// 	return new Promise(resolve => setTimeout(resolve, time));
+			// }
+
+			// function setState(state) {
+			// 	traffic.className = state;
+			// }
+
+			// function reset() {
+			// 	Promise.resolve()
+			// 				 .then(setState.bind(null, 'wait'))
+			// 				 .then(wait.bind(null, 1000))
+			// 				 .then(setState.bind(null, 'stop'))
+			// 				 .then(wait.bind(null, 2000))
+			// 				 .then(setState.bind(null, 'pass'))
+			// 				 .then(wait.bind(null, 3000))
+			// 				 .then(reset);
+			// }
+
+			// reset();
+
+
+			/*
+				version 6
+			*/
+
+			function TrafficProtocol(el, reset) {
+				this.subject = el;
+				this.autoReset = reset;
+				this.stateFnList = [];
+			}
+
+			TrafficProtocol.prototype.push = function(fn) {
+				this.stateFnList.push(fn);
+			}
+
+			TrafficProtocol.prototype.reset = function() {
+				this.statePromise = Promise.resolve();
+				let subject = this.subject;
+				this.stateFnList.forEach(fn => {
+					this.statePromise = this.statePromise.then(function resolve() { //相当于3个链式的then
+						console.log('resolve');
+						return new Promise(resolve => {
+							fn(subject, resolve);// 只有调用resolve 才会进入下一个then
+						});
+					})
+				});
+				if (this.autoReset) {
+					this.statePromise.then(this.reset.bind(this));
+				}
+			}
+
+			TrafficProtocol.prototype.start = function() {
+				this.reset();
+			}
+
+			var trafficP = new TrafficProtocol(traffic, true);
+
+			trafficP.push((el, next) => {
+				el.className = 'wait';
+				setTimeout(next, 1000);
+			});
+
+			trafficP.push((el, next) => {
+				el.className = 'stop';
+				setTimeout(next, 2000);
+			});
+
+			trafficP.push((el, next) => {
+				el.className = 'pass';
+				setTimeout(next, 3000);
+			});
+
+			trafficP.start();
+	</script>
+</html>
