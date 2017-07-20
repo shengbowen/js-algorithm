@@ -195,6 +195,84 @@ var outputOneByOne = __pipe__(output.bind(null, 'message 1'),
 outputOneByOne();
 
 
+/*
+	reduce and pipe
+*/
+function __reduce__(...fnList) {
+	return function(...args) {
+		if (fnList.length <= 0) return;
+		fnList[0] = fnList[0].apply(this, args);
+
+		return fnList.reduce((a, b) => b.call(this, a));
+	}
+}
+
+function __pipe__(...fnList) {
+	return function(...args) {
+		var fn = fnList.reduceRight((a, b) => (...args) => b.apply(this, [...args, a]));
+		return fn.apply(this, args);
+	}
+}
+
+function add(x, y){
+  return x + y;
+}
+
+function double(x){
+  return 2 * x;
+}
+
+var foo = __reduce__(add, double, double, double);
+
+console.log(foo(1, 2));
+
+function taskA(x, next){
+  console.log(`task a: ${x}`);
+  next();
+}
+
+function taskB(next){
+  console.log('task b');
+  next();
+}
+
+function taskC(){
+  console.log('task c');
+}
+
+var foo2 = __pipe__(taskA, taskB, taskC);
+
+foo2(10);
+
+
+/*
+	throttle 避免重复点击
+	wait 秒内 只执行一次
+*/
+function throttle(fn, wait) {
+	var timer;
+	return function(...args) {
+		if (!timer) {
+			setTimeout(() => timer = null, wait);
+			fn.apply(this, args);
+		}
+	}
+}
+
+/*
+	debounce 避免连续触发
+	小于wait秒，永不执行函数
+*/
+
+function debounce(fn, wait) {
+	var timer;
+	return function(...args) {
+		clearTimeout(timer);
+		timer = setTimeout(() => fn.apply(this, args), wait)
+	}
+}
+
+
 
 
 
