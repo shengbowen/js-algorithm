@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>
+  .wall {
+    position: absolute;
+    height: 100%;
+    width: 100px;
+    padding: 0;
+    margin: 0;
+    margin-left: 300px;
+    background-color: black;
+  }
+
+  .ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: green;
+  }
+
+  .ball--hidden {
+    display: none;
+  }
+
+  #ball1 {
+    left: 50px;
+    top: 50px;
+  }
+
+  #ball2 {
+    left: 530px;
+    top: 50px;
+  }
+
+</style>
+
+<body>
+  <button id="playBtn">play</button>
+  <div class="wall"></div>
+  <div class="ball" id="ball1"></div>
+  <div class="ball ball--hidden" id="ball2"></div>
+</body>
+<script>
+  function drop(ball, from, to, onupdate, duration = 2000) {
+    let startTime = Date.now(),
+      [x0, y0] = from,
+      [x1, y1] = to;
+
+    requestAnimationFrame(function update() {
+      let currentTime = Date.now(),
+        p = (currentTime - startTime) / duration;
+
+      p = Math.min(p, 1.0);
+
+      let x = x0 + (x1 - x0) * p,
+        y = y0 + (y1 - y0) * p * p;
+
+      onupdate(ball, x, y);
+
+      ball.style.left = x + 'px';
+      ball.style.top = y + 'px';
+
+      if (p < 1) {
+        requestAnimationFrame(update);
+      }
+    })
+  }
+
+  let playBtn = document.getElementById('playBtn');
+
+  playBtn.onclick = function () {
+    drop(ball1, [50, 50], [400, 600], function (ball, x, y) {
+      if (x < 290) {
+        ball.className = 'ball';
+      }
+      if (x >= 290) {
+        ball.className = 'ball ball--hidden';
+      }
+    })
+
+    drop(ball2, [530, 50], [180, 600], function (ball, x, y) {
+      if (x < 290) {
+        ball.className = 'ball';
+      }
+      if (x >= 290) {
+        ball.className = 'ball ball--hidden';
+      }
+    });
+  }
+
+</script>
+
+</html>
