@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    #ball {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: green;
+      border-radius: 50%;
+      top: 200px;
+      left: 200px;
+      transform: translate(0, -100px);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="ball"></div>
+</body>
+  <script>
+    // 椭圆运动
+    function startCircle(el) {
+      let startTime = Date.now(),
+          duration = 4000,
+          a = 160, b = 80;
+      requestAnimationFrame(function update() {
+        let currentTime = Date.now(),
+            p = (currentTime - startTime) / duration;
+        if (p > 1) p -= 1;
+        let [x, y] = [a * Math.cos(Math.PI * 2 * p), b * Math.sin(Math.PI * 2 * p)];
+
+        el.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(update);
+      });
+    }
+
+    startCircle(document.querySelector('#ball'));
+  </script>
+</html>
