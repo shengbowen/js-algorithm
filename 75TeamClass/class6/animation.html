@@ -6,39 +6,326 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    #ball {
+    .block {
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background: green;
-      border-radius: 50%;
-      top: 200px;
-      left: 200px;
-      transform: translate(0, -100px);
+      width: 100px;
+      height: 100px;
+      background: #0c8;
+      line-height: 100px;
+      text-align: center;
+      cursor: pointer;
     }
+
+    .wrap {
+      position: relative;
+      height: 150px;
+    }
+
+    .wrap1 {
+      position: relative;
+      height: 450px;
+      overflow: auto;
+    }
+
+    .ball {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      line-height: 50px;
+    }
+
+    section {
+      border-bottom: 3px solid #eee;
+    }
+
   </style>
+  <script src="./animate.js"></script>
+  <script src="./bezier-easing.min.js"></script>
 </head>
 
 <body>
-  <div id="ball"></div>
+  <article>
+    <section>
+      <figure>
+        <img src="./animate.jpg" alt="" width="400">
+        <figcaption>对动画模型进行抽象</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>圆周循环运动</h2>
+      <div class="wrap1">
+        <div id="block1" class="block ball" style="top: 100px; left: 300px;">click</div>
+      </div>
+      <script>
+        let block1 = document.getElementById('block1');
+
+        let animator = new Animator(2000, function (p) {
+          let tx = -100 * Math.sin(2 * Math.PI * p),
+            ty = -100 * Math.cos(2 * Math.PI * p);
+
+          block1.style.transform = 'translate(' +
+            tx + 'px,' + ty + 'px)';
+        });
+
+        block1.addEventListener('click', async function (evt) {
+          let i = 0;
+
+          while (1) {
+            await animator.animate();
+            block1.style.background = ['red', 'green', 'blue'][i++ % 3];
+          }
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>折线运动</h2>
+      <div class="wrap1">
+        <div id="block2" class="block ball" style="top: 100px; left: 300px;">click</div>
+      </div>
+      <script>
+        let block2 = document.getElementById('block2');
+
+        let animator1 = new Animator(500, function (p) {
+          var tx = 100 * p;
+
+          block2.style.transform = `translateX(${tx}px)`;
+        });
+
+        let animator2 = new Animator(1000, function (p) {
+          var ty = 100 * p;
+
+          block2.style.transform = `translate(100px, ${ty}px)`;
+        });
+
+        block2.addEventListener('click', async function (evt) {
+          await animator1.animate();
+          await animator2.animate();
+        })
+
+      </script>
+    </section>
+
+
+    <section>
+      <figure>
+        <img src="./animate1.jpg" alt="" width="400">
+        <figcaption>弹跳小球</figcaption>
+      </figure>
+      <h2>弹跳小球</h2>
+      <div class="wrap1">
+        <div id="block3" class="block ball" style="top: 100px; left: 300px;">click</div>
+      </div>
+      <script>
+        let block3 = document.getElementById('block3');
+
+        let animator3 = new Animator(1414, function (p) {
+          var ty = 200 * p * p;
+
+          block3.style.transform = `translateY(${ty}px)`;
+        });
+
+        let animator4 = new Animator(1414, function (p) {
+          var ty = 200 - 200 * p * (2 - p);
+
+          block3.style.transform = `translateY(${ty}px)`;
+        });
+
+        block3.addEventListener('click', async function (evt) {
+          await animator3.animate();
+          await animator4.animate();
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>弹跳小球--增加阻力系数</h2>
+      <p>T' = 0.7T <br> S' = 0.49S</p>
+      <div class="wrap1">
+        <div id="block4" class="block ball" style="top: 200px; left: 300px; transform: translateY(-200px);">click</div>
+      </div>
+      <script>
+        let block4 = document.getElementById('block4');
+
+        block4.addEventListener('click', async function (evt) {
+
+          let T = 1414,
+            loss = 0.7;
+
+          let animator5 = new Animator(T, function (p) {
+            var s = this.duration * 200 / T;
+            var ty = s * (p * p - 1);
+
+            block4.style.transform = `translateY(${ty}px)`;
+          });
+
+          let animator6 = new Animator(T, function (p) {
+            var s = this.duration * 200 / T;
+            var ty = -s * p * (2 - p);
+
+            block4.style.transform = `translateY(${ty}px)`;
+          });
+
+
+          while (animator6.duration > 0.001) {
+            await animator5.animate();
+            animator6.duration *= loss;
+            await animator6.animate();
+            animator5.duration *= loss;
+          }
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>滚动的小球</h2>
+      <div class="wrap1">
+        <div id="block5" class="block ball" style="left: 300px;">click</div>
+      </div>
+      <script>
+        let block5 = document.getElementById('block5');
+
+        block5.addEventListener('click', async function (evt) {
+
+          let animator = new Animator(4000, function (p) {
+            let rotation = 360 * p,
+              x =  300 * p;
+
+            block5.style.transform = `translateX(${x}px) rotate(${rotation}deg)`;
+            // block5.style.left = `${x}px`;
+          });
+
+          await animator.animate();
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>甩出小球</h2>
+      <figure>
+        <img src="./animate2.jpg" alt="" width="400">
+        <figcaption>甩出小球</figcaption>
+      </figure>
+      <div class="wrap1">
+        <div id="block6" class="block ball" style="left: 300px;">click</div>
+      </div>
+      <script>
+        let block6 = document.getElementById('block6');
+
+        block6.addEventListener('click', async function (evt) {
+
+          var a1 = new Animator(2800, function (p) {
+            var x = -100 * Math.sin(2.8 * Math.PI * p);
+            var y = 100 - 100 * Math.cos(2.8 * Math.PI * p);
+
+            block6.style.transform = 'translate(' + x + 'px,' +
+              y + 'px)';
+          });
+
+          var a2 = new Animator(5000, function (p) {
+            var x = -100 * Math.sin(2.8 * Math.PI) -
+              100 * Math.cos(2.8 * Math.PI) * Math.PI * 5 * p;
+
+            var y = 100 - 100 * Math.cos(2.8 * Math.PI) +
+              100 * Math.sin(2.8 * Math.PI) * Math.PI * 5 * p;
+
+            console.log(y);
+
+            block6.style.transform = 'translate(' + x + 'px,' +
+              y + 'px)';
+          });
+
+          await a1.animate();
+          await a2.animate();
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>贝塞尔曲线</h2>
+      <div class="wrap1">
+        <div id="block7" class="block ball" style="left: 300px;">click</div>
+      </div>
+      <script>
+        let block7 = document.getElementById('block7');
+
+        block7.addEventListener('click', async function (evt) {
+
+          let easing = BezierEasing(0.68, -0.55, 0.265, 1.55);
+          //easeInOutBack
+
+          let animator = new Animator(2000, function(ep, p) {
+            let x = 200 * ep;
+
+            block7.style.transform = `translateX(${x}px)`;
+          }, easing)
+
+          await animator.animate();
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>贝塞尔曲线轨迹</h2>
+      <div class="wrap1">
+        <div id="block8" class="block ball" style="left: 300px; top: 300px">click</div>
+      </div>
+      <script>
+        let block8 = document.getElementById('block8');
+
+        block8.addEventListener('click', async function (evt) {
+
+          let easing = BezierEasing(0.68, -0.55, 0.265, 1.55);
+          //easeInOutBack
+
+          let animator = new Animator(2000, function(ep, p) {
+            let x = 200 * p;
+            let y = -200 * ep;
+
+            block8.style.transform = `translate(${x}px, ${y}px)`;
+          }, easing)
+
+          await animator.animate();
+        })
+
+      </script>
+    </section>
+
+    <section>
+      <h2>翻转动画</h2>
+      <div class="wrap1">
+        <div id="block9" class="block ball" style="left: 300px; top: 300px">click</div>
+      </div>
+      <script>
+        let block9 = document.getElementById('block9');
+
+        block9.addEventListener('click', async function (evt) {
+
+          let easing = BezierEasing(0.68, -0.55, 0.265, 1.55);
+          //easeInOutBack
+
+          let animator = new Animator(2000, function(ep, p) {
+            let x = 200 * p;
+            let y = -200 * ep;
+            let r = 360 * ep;
+
+            block9.style.transform = `translate(${x}px, ${y}px) rotateY(${r}deg)`;
+          }, easing)
+
+          await animator.animate();
+        })
+
+      </script>
+    </section>
+
+  </article>
 </body>
-  <script>
-    // 椭圆运动
-    function startCircle(el) {
-      let startTime = Date.now(),
-          duration = 4000,
-          a = 160, b = 80;
-      requestAnimationFrame(function update() {
-        let currentTime = Date.now(),
-            p = (currentTime - startTime) / duration;
-        if (p > 1) p -= 1;
-        let [x, y] = [a * Math.cos(Math.PI * 2 * p), b * Math.sin(Math.PI * 2 * p)];
 
-        el.style.transform = `translate(${x}px, ${y}px)`;
-        requestAnimationFrame(update);
-      });
-    }
-
-    startCircle(document.querySelector('#ball'));
-  </script>
 </html>

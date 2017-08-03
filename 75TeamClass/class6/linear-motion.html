@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .block {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: #0c8;
+      line-height: 100px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .wrap {
+      position: relative;
+      height: 150px;
+    }
+
+    .wrap1 {
+      position: relative;
+      height: 450px;
+      overflow: auto;
+    }
+
+    .ball {
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      line-height: 50px;
+    }
+
+    section {
+      border-bottom: 3px solid #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <article>
+      <section>
+        <h1>直线运动</h1>
+        <p>
+          <ol>
+            <li><a href="#s1">匀速直线运动</a></li>
+            <li><a href="#s2">匀加速直线运动</a></li>
+            <li><a href="#s3">匀减速直线运动</a></li>
+            <li><a href="#s4">平面上的直线运动</a></li>
+          </ol>
+        </p>
+      </section>
+
+      <section id="s1">
+        <figure>
+          <img src="./motion-formula.jpg" alt="" width="400">
+          <figcaption>匀速直线运动公式</figcaption>
+        </figure>
+
+        <h2>匀速直线运动，滑块在2秒内移动200px</h2>
+        <div class="wrap">
+          <div id="block1" class="block">click me</div>
+        </div>
+        <script>
+          let block1 = document.getElementById('block1');
+          block1.addEventListener('click', function() {
+            let startTime = Date.now(),
+                distance = 800,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              block1.style.transform = `translateX(${distance * p}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s2">
+        <figure>
+          <img src="./motion-formula2.jpg" alt="" width="400">
+          <figcaption>匀加速直线运动公式</figcaption>
+        </figure>
+
+        <h2>匀加速直线运动，滑块在2秒内移动200px</h2>
+        <div class="wrap">
+          <div id="block2" class="block">click me</div>
+        </div>
+        <script>
+          let block2 = document.getElementById('block2');
+          block2.addEventListener('click', function() {
+            let startTime = Date.now(),
+                distance = 800,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              block2.style.transform = `translateX(${distance * p * p}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s3">
+        <figure>
+          <img src="./motion-formula3.jpg" alt="" width="400">
+          <figcaption>匀减速直线运动公式</figcaption>
+        </figure>
+
+        <h2>匀减速直线运动，滑块在2秒内移动200px</h2>
+        <div class="wrap">
+          <div id="block3" class="block">click me</div>
+        </div>
+        <script>
+          let block3 = document.getElementById('block3');
+          block3.addEventListener('click', function() {
+            let startTime = Date.now(),
+                distance = 800,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              block3.style.transform = `translateX(${distance * p * (2 - p)}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s4">
+        <h2>斜线运动</h2>
+        <div class="wrap1">
+          <div id="block4" class="block" >click me</div>
+        </div>
+        <script>
+          let block4 = document.getElementById('block4');
+          block4.addEventListener('click', function() {
+            let startTime = Date.now(),
+                distance = 400,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              let x, y;
+              x = y = distance * p;
+              block4.style.transform = `translate(${x}px, ${y}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s5">
+        <h2>曲线运动--抛物线</h2>
+        <div class="wrap1">
+          <div id="block5" class="block ball">click</div>
+        </div>
+        <script>
+          let block5 = document.getElementById('block5');
+          block5.addEventListener('click', function() {
+            let startTime = Date.now(),
+                disX = 200, disY = 200,
+                duration = 500 * Math.sqrt(2 * disY / 98);
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              let x = disX * p;
+              let y = disY * p * p;
+
+              block5.style.transform = `translate(${x}px, ${y}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s6">
+        <h2>曲线运动--正弦运动</h2>
+        <div class="wrap1">
+          <div id="block6" class="block ball"  style="top: 100px;">click</div>
+        </div>
+        <script>
+          let block6 = document.getElementById('block6');
+          block6.addEventListener('click', function() {
+            let startTime = Date.now(),
+                distance = 100,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              let y = distance * Math.sin(2 * Math.PI * p);
+              let x = 2 * distance * p;
+
+              block6.style.transform = `translate(${x}px, ${y}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+      <section id="s7">
+        <figure>
+          <img src="./motion-formula4.jpg" alt="" width="400">
+          <figcaption>圆的方程公式</figcaption>
+        </figure>
+        <h2>曲线运动--椭圆运动</h2>
+        <div class="wrap1">
+          <div id="block7" class="block ball"  style="top: 100px; left: 300px;">click</div>
+        </div>
+        <script>
+          let block7 = document.getElementById('block7');
+          block7.addEventListener('click', function() {
+            let startTime = Date.now(),
+                a = 150,
+                b = 100,
+                duration = 2000;
+
+            requestAnimationFrame(function update() {
+              let currentTime = Date.now(),
+                  p = (currentTime - startTime) / duration;
+              p = Math.min(p, 1);
+              let x = a * Math.sin(2 * Math.PI * p);
+              let y = b * Math.cos(2 * Math.PI * p);
+
+              block7.style.transform = `translate(${x}px, ${y}px)`;
+              if (p < 1) {
+                requestAnimationFrame(update);
+              }
+            });
+          })
+        </script>
+      </section>
+
+    </article>
+
+  </main>
+</body>
+
+</html>
